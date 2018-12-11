@@ -6,7 +6,7 @@
 /*   By: lreznak- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 19:42:50 by lreznak-          #+#    #+#             */
-/*   Updated: 2018/12/11 20:05:27 by lreznak-         ###   ########.fr       */
+/*   Updated: 2018/12/11 22:09:08 by lreznak-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@ int					get_next_line(const int fd, char **line)
 		}
 		buf[fd] = str1;
 	}
-	if (!(*buf[fd]))
-		return (0);
-	if ((str_len = ft_strlen_bsn(buf[fd])))
+		((str_len = ft_strlen_bsn(buf[fd])));
+	{
 		if (!(*line = (char *)malloc(str_len + 1)))
 			return (-1);
+	}
 	while (*buf[fd] && *buf[fd] != '\n')
 	{
 		**line = *buf[fd];
@@ -70,7 +70,9 @@ int					get_next_line(const int fd, char **line)
 	(*line) -= str_len;
 	if (*buf[fd] == '\n')
 		buf[fd]++;
-	printf("\n??????? %c ?????????\n", *buf[fd]);
+	if (!(*buf[fd]))
+		return (0);
+	printf("\n CHAR: %d \n", *buf[fd]);
 	return (1);
 }
 
@@ -88,14 +90,20 @@ int			main(void)
 	{
 		printf("%d\n", get_next_line(fd, &cp));
 		printf("%s\n", cp);
-		/*printf("%d\n", get_next_line(fd, &cp));
-		printf("%s\n", cp);
-		printf("%d\n", get_next_line(fd, &cp));
-		printf("%s\n", cp);
-		printf("%d\n", get_next_line(fd, &cp));
-		printf("%s\n", cp);*/
+		printf("%d\n", get_next_line(fd, &cp1));
+		printf("%s\n", cp1);
+		printf("%d\n", get_next_line(fd, &cp2));
+		printf("%s\n", cp2);
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("!! %s !!\n", cp3);
 
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%d\n", get_next_line(fd, &cp3));
 	}
-
 }
 
