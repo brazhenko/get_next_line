@@ -6,7 +6,7 @@
 /*   By: lreznak- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 19:42:50 by lreznak-          #+#    #+#             */
-/*   Updated: 2018/12/11 22:09:08 by lreznak-         ###   ########.fr       */
+/*   Updated: 2018/12/12 12:29:00 by lreznak-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ static int			ft_strlen_bsn(char *str)
 	return (len);
 }
 
+char				*ft_strchr(const char *s, int c);
 int					get_next_line(const int fd, char **line)
 {
 	static char			*buf[FD_MAX];
@@ -48,14 +49,22 @@ int					get_next_line(const int fd, char **line)
 			return (-1);
 		while (read(fd, str2, BUFF_SIZE))
 		{
-			str3 = str1;
-			if (!(str1 = ft_strjoin((const char *)str1, (const char *)str2)))
-				return (-1);
-			free(str3);
+			{	
+				str3 = str1;
+				if (!(str1 = ft_strjoin((const char *)str1, (const char *)str2)))
+					return (-1);
+				// printf("STRING_TEMP: %s\n", str1);
+				free(str3);
+				free(str2);
+				str2 = ft_strnew(BUFF_SIZE);
+			}
 		}
 		buf[fd] = str1;
+		// printf("STRING: %s\n", str1);
 	}
-		((str_len = ft_strlen_bsn(buf[fd])));
+	((str_len = ft_strlen_bsn(buf[fd])));	
+	if (!(*buf[fd]))
+		return (0);
 	{
 		if (!(*line = (char *)malloc(str_len + 1)))
 			return (-1);
@@ -70,9 +79,7 @@ int					get_next_line(const int fd, char **line)
 	(*line) -= str_len;
 	if (*buf[fd] == '\n')
 		buf[fd]++;
-	if (!(*buf[fd]))
-		return (0);
-	printf("\n CHAR: %d \n", *buf[fd]);
+	// printf("\n CHAR: %d \n", *buf[fd]);
 	return (1);
 }
 
@@ -95,11 +102,11 @@ int			main(void)
 		printf("%d\n", get_next_line(fd, &cp2));
 		printf("%s\n", cp2);
 		printf("%d\n", get_next_line(fd, &cp3));
-		printf("!! %s !!\n", cp3);
-
+		printf("%s\n", cp3);
 		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%s\n", cp3);
 		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%d\n", get_next_line(fd, &cp3));
+		printf("%s\n", cp3);
 		printf("%d\n", get_next_line(fd, &cp3));
 		printf("%d\n", get_next_line(fd, &cp3));
 		printf("%d\n", get_next_line(fd, &cp3));
