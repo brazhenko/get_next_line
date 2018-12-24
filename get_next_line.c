@@ -6,7 +6,7 @@
 /*   By: lreznak- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 19:42:50 by lreznak-          #+#    #+#             */
-/*   Updated: 2018/12/24 03:34:30 by lreznak-         ###   ########.fr       */
+/*   Updated: 2018/12/24 11:24:49 by lreznak-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,12 @@ static int			costyl(t_string **str1, t_string **buf_fd, int fd)
 	return (1);
 }
 
+static int			costyl2(t_string **buf)
+{
+	*buf = NULL;
+	return (0);
+}
+
 int					get_next_line(const int fd, char **line)
 {
 	static t_string				*buf[FD_MAX];
@@ -79,7 +85,7 @@ int					get_next_line(const int fd, char **line)
 			return (-1);
 	str_len = ft_strlen_bsn(buf[fd]->text);
 	if (!(*(buf[fd]->text)))
-		return (0);
+		return (costyl2(&(buf[fd])));
 	if (!(*line = (char *)malloc(str_len + 1)))
 		return (-1);
 	while (*(buf[fd]->text) && *(buf[fd]->text) != '\n')
