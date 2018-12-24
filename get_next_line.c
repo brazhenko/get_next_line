@@ -6,7 +6,7 @@
 /*   By: lreznak- <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/11 19:42:50 by lreznak-          #+#    #+#             */
-/*   Updated: 2018/12/12 12:29:00 by lreznak-         ###   ########.fr       */
+/*   Updated: 2018/12/24 03:34:30 by lreznak-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,87 +30,67 @@ static int			ft_strlen_bsn(char *str)
 	return (len);
 }
 
-char				*ft_strchr(const char *s, int c);
+static t_string		*create_t_string(void)
+{
+	t_string *s;
+
+	s = (t_string *)malloc(sizeof(t_string));
+	s->text = ft_strnew(1);
+	return (s);
+}
+
+static int			costyl(t_string **str1, t_string **buf_fd, int fd)
+{
+	char *str2;
+	char *str3;
+
+	str2 = ft_strnew(BUFF_SIZE);
+	*str1 = create_t_string();
+	if (read(fd, NULL, 0) == -1)
+		return (-1);
+	while (read(fd, str2, BUFF_SIZE))
+	{
+		{
+			str3 = (*str1)->text;
+			if (!((*str1)->text = ft_strjoin((const char *)((*str1)->text), \
+									(const char *)str2)))
+				return (-1);
+			free(str3);
+			free(str2);
+			str2 = ft_strnew(BUFF_SIZE);
+		}
+	}
+	free(str2);
+	*buf_fd = *str1;
+	(*str1)->begin = (*str1)->text;
+	return (1);
+}
+
 int					get_next_line(const int fd, char **line)
 {
-	static char			*buf[FD_MAX];
-	int					str_len;
-	char				*str1;
-	char				*str2;
-	char				*str3;
+	static t_string				*buf[FD_MAX];
+	int							str_len;
+	t_string					*str1;
 
 	if (fd < 0 || !line || FD_MAX < fd)
 		return (-1);
-	str1 = ft_strnew(1);
-	str2 = ft_strnew(BUFF_SIZE);
 	if (!buf[fd])
-	{
-		if (read(fd, NULL, 0) == -1)
+		if (costyl(&str1, &(buf[fd]), fd) == -1)
 			return (-1);
-		while (read(fd, str2, BUFF_SIZE))
-		{
-			{	
-				str3 = str1;
-				if (!(str1 = ft_strjoin((const char *)str1, (const char *)str2)))
-					return (-1);
-				// printf("STRING_TEMP: %s\n", str1);
-				free(str3);
-				free(str2);
-				str2 = ft_strnew(BUFF_SIZE);
-			}
-		}
-		buf[fd] = str1;
-		// printf("STRING: %s\n", str1);
-	}
-	((str_len = ft_strlen_bsn(buf[fd])));	
-	if (!(*buf[fd]))
+	str_len = ft_strlen_bsn(buf[fd]->text);
+	if (!(*(buf[fd]->text)))
 		return (0);
+	if (!(*line = (char *)malloc(str_len + 1)))
+		return (-1);
+	while (*(buf[fd]->text) && *(buf[fd]->text) != '\n')
 	{
-		if (!(*line = (char *)malloc(str_len + 1)))
-			return (-1);
-	}
-	while (*buf[fd] && *buf[fd] != '\n')
-	{
-		**line = *buf[fd];
-		buf[fd]++;
+		**line = *(buf[fd]->text);
+		(buf[fd]->text)++;
 		(*line)++;
 	}
 	**line = 0;
 	(*line) -= str_len;
-	if (*buf[fd] == '\n')
-		buf[fd]++;
-	// printf("\n CHAR: %d \n", *buf[fd]);
+	if (*(buf[fd]->text) == '\n')
+		(buf[fd]->text)++;
 	return (1);
 }
-
-
-int			main(void)
-{
-	int n = 5;
-	char *cp;
-	char *cp1;
-	char *cp2;
-	char *cp3;
-	int fd = open("file", O_RDONLY);
-	int m = 10;
-
-	{
-		printf("%d\n", get_next_line(fd, &cp));
-		printf("%s\n", cp);
-		printf("%d\n", get_next_line(fd, &cp1));
-		printf("%s\n", cp1);
-		printf("%d\n", get_next_line(fd, &cp2));
-		printf("%s\n", cp2);
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%s\n", cp3);
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%s\n", cp3);
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%s\n", cp3);
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%d\n", get_next_line(fd, &cp3));
-		printf("%d\n", get_next_line(fd, &cp3));
-	}
-}
-
